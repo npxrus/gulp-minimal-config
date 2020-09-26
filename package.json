@@ -26,6 +26,8 @@
   },
   "homepage": "https://github.com/npxrus/gulp-minimal-config#readme",
   "devDependencies": {
+    "browser-sync": "^2.26.12",
+    "del": "^6.0.0",
     "gulp": "^4.0.2"
   }
 }
