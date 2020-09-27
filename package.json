@@ -25,9 +25,23 @@
     "url": "https://github.com/npxrus/gulp-minimal-config/issues"
   },
   "homepage": "https://github.com/npxrus/gulp-minimal-config#readme",
+  "browsersList": [
+    "last 2 versions",
+    "not dead",
+    "not ie <= 11",
+    "ios >= 12"
+  ],
   "devDependencies": {
+    "autoprefixer": "^10.0.1",
     "browser-sync": "^2.26.12",
     "del": "^6.0.0",
-    "gulp": "^4.0.2"
+    "gulp": "^4.0.2",
+    "gulp-group-css-media-queries": "^1.2.2",
+    "gulp-postcss": "^9.0.0",
+    "gulp-replace": "^1.0.0",
+    "gulp-shorthand": "^1.1.0",
+    "postcss": "^8.1.0",
+    "postcss-import": "^12.0.1",
+    "postcss-media-minmax": "^4.0.0"
   }
 }
