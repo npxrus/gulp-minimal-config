@@ -4,13 +4,11 @@ import browserSync from "browser-sync";
 import del from "del";
 import groupMedia from "gulp-group-css-media-queries";
 import gulp from "gulp";
-import gulpIf from "gulp-if";
 import minmax from "postcss-media-minmax";
 import postcss from "gulp-postcss";
 import postimport from "postcss-import";
 import replace from "gulp-replace";
 import terser from "gulp-terser";
-import webpHTML from "gulp-webp-html";
 
 // System
 const server = browserSync.create();
@@ -50,17 +48,14 @@ const serve = (done) => {
 
 const copy = () =>
   gulp
-    .src(["src/fonts/**/*", "src/images/**/*"], { base: "src" })
+    .src(["src/assets/fonts/**/*", "src/assets/images/**/*"], { base: "src" })
     .pipe(gulp.dest("dist/"))
     .pipe(server.stream({ once: true }));
-
-const isWebp = (file) => file.extname === ".webp";
 
 // HTML
 const html = () => {
   return gulp
-    .src([paths.layout.src, "src/images/*.webp"])
-    .pipe(gulpIf(isWebp, webpHTML()))
+    .src(paths.layout.src)
     .pipe(gulp.dest(paths.layout.dest))
     .pipe(server.stream());
 };
@@ -92,7 +87,10 @@ const watch = () => {
   gulp.watch(paths.layout.src, gulp.series(html));
   gulp.watch(paths.styles.watch, gulp.series(css));
   gulp.watch(paths.scripts.src, gulp.series(js));
-  gulp.watch(["src/fonts/**/*", "src/images/**/*"], gulp.series(copy));
+  gulp.watch(
+    ["src/assets/fonts/**/*", "src/assets/images/**/*"],
+    gulp.series(copy)
+  );
 };
 
 // Default

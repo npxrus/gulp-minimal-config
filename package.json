@@ -40,11 +40,9 @@
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-group-css-media-queries": "^1.2.2",
-    "gulp-if": "^3.0.0",
     "gulp-postcss": "^9.0.0",
     "gulp-replace": "^1.0.0",
     "gulp-terser": "^1.4.0",
-    "gulp-webp-html": "^1.0.2",
     "postcss": "^8.1.0",
     "postcss-import": "^12.0.1",
     "postcss-media-minmax": "^4.0.0"
