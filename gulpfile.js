@@ -1,13 +1,16 @@
 import autoprefixer from "autoprefixer";
+import babel from "gulp-babel";
 import browserSync from "browser-sync";
 import del from "del";
 import groupMedia from "gulp-group-css-media-queries";
 import gulp from "gulp";
+import gulpIf from "gulp-if";
 import minmax from "postcss-media-minmax";
 import postcss from "gulp-postcss";
 import postimport from "postcss-import";
 import replace from "gulp-replace";
-import shorthand from "gulp-shorthand";
+import terser from "gulp-terser";
+import webpHTML from "gulp-webp-html";
 
 // System
 const server = browserSync.create();
@@ -45,10 +48,13 @@ const serve = (done) => {
   done();
 };
 
+const isWebp = (file) => file.extname === ".webp";
+
 // HTML
 const html = () => {
   return gulp
-    .src(paths.layout.src)
+    .src([paths.layout.src, "src/images/*.webp"])
+    .pipe(gulpIf(isWebp, webpHTML()))
     .pipe(gulp.dest(paths.layout.dest))
     .pipe(server.stream());
 };
@@ -60,9 +66,18 @@ const css = () => {
     .pipe(postcss([postimport, minmax, autoprefixer]))
     .pipe(replace(/\.\.\//g, ""))
     .pipe(gulp.dest(paths.styles.dest))
-    .pipe(shorthand())
     .pipe(groupMedia())
     .pipe(gulp.dest(paths.styles.dest))
+    .pipe(server.stream());
+};
+
+// Scripts
+const js = () => {
+  return gulp
+    .src(paths.scripts.src)
+    .pipe(babel({ presets: ["@babel/preset-env"] }))
+    .pipe(terser())
+    .pipe(gulp.dest(paths.scripts.dest))
     .pipe(server.stream());
 };
 
