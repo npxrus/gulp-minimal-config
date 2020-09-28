@@ -48,6 +48,12 @@ const serve = (done) => {
   done();
 };
 
+const copy = () =>
+  gulp
+    .src(["src/fonts/**/*", "src/images/**/*"], { base: "src" })
+    .pipe(gulp.dest("dist/"))
+    .pipe(server.stream({ once: true }));
+
 const isWebp = (file) => file.extname === ".webp";
 
 // HTML
@@ -81,9 +87,17 @@ const js = () => {
     .pipe(server.stream());
 };
 
+// Watcher
 const watch = () => {
   gulp.watch(paths.layout.src, gulp.series(html));
   gulp.watch(paths.styles.watch, gulp.series(css));
+  gulp.watch(paths.scripts.src, gulp.series(js));
+  gulp.watch(["src/fonts/**/*", "src/images/**/*"], gulp.series(copy));
 };
 
-export default gulp.series(clean, gulp.parallel(html, css), serve, watch);
+// Default
+export default gulp.series(
+  clean,
+  gulp.parallel(html, css, js, copy),
+  gulp.parallel(serve, watch)
+);
