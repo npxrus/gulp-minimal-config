@@ -1,14 +1,14 @@
-import autoprefixer from "autoprefixer";
-import babel from "gulp-babel";
-import browserSync from "browser-sync";
-import del from "del";
-import groupMedia from "gulp-group-css-media-queries";
 import gulp from "gulp";
-import minmax from "postcss-media-minmax";
+import del from "del";
+import babel from "gulp-babel";
+import htmlMin from "gulp-htmlmin";
+import scss from "gulp-sass";
 import postcss from "gulp-postcss";
-import postimport from "postcss-import";
-import replace from "gulp-replace";
+import csso from "postcss-csso";
 import terser from "gulp-terser";
+import autoprefixer from "autoprefixer";
+import groupMedia from "gulp-group-css-media-queries";
+import browserSync from "browser-sync";
 
 // System
 const server = browserSync.create();
@@ -19,9 +19,9 @@ const paths = {
     dest: "dist/",
   },
   styles: {
-    src: "src/assets/styles/style.css",
+    src: "src/assets/sass/main.scss",
     dest: "dist/assets/styles/",
-    watch: "src/assets/styles/**/*.css",
+    watch: "src/assets/sass/**/*.scss",
   },
   scripts: {
     src: "src/assets/scripts/**/*.js",
@@ -56,6 +56,7 @@ const copy = () =>
 const html = () => {
   return gulp
     .src(paths.layout.src)
+    .pipe(htmlMin({ removeComments: true, collapseWhitespace: true }))
     .pipe(gulp.dest(paths.layout.dest))
     .pipe(server.stream());
 };
@@ -64,10 +65,9 @@ const html = () => {
 const css = () => {
   return gulp
     .src(paths.styles.src)
-    .pipe(postcss([postimport, minmax, autoprefixer]))
-    .pipe(replace(/\.\.\//g, ""))
-    .pipe(gulp.dest(paths.styles.dest))
+    .pipe(scss({ outputStyle: "compressed" }))
     .pipe(groupMedia())
+    .pipe(postcss([autoprefixer, csso]))
     .pipe(gulp.dest(paths.styles.dest))
     .pipe(server.stream());
 };
