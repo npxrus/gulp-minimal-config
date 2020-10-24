@@ -2,8 +2,11 @@ import gulp from "gulp";
 import del from "del";
 import babel from "gulp-babel";
 import htmlMin from "gulp-htmlmin";
-import scss from "gulp-sass";
 import postcss from "gulp-postcss";
+import postcssImport from "postcss-import";
+import nested from "postcss-nested";
+import simpleVars from "postcss-simple-vars";
+import minmax from "postcss-media-minmax";
 import csso from "postcss-csso";
 import terser from "gulp-terser";
 import autoprefixer from "autoprefixer";
@@ -19,9 +22,9 @@ const paths = {
     dest: "dist/",
   },
   styles: {
-    src: "src/assets/sass/main.scss",
+    src: "src/assets/styles/main.css",
     dest: "dist/assets/styles/",
-    watch: "src/assets/sass/**/*.scss",
+    watch: "src/assets/styles/**/*.css",
   },
   scripts: {
     src: "src/assets/scripts/**/*.js",
@@ -31,11 +34,6 @@ const paths = {
 
 // Service
 const clean = () => del(["dist"]);
-
-const reload = (done) => {
-  server.reload();
-  done();
-};
 
 const serve = (done) => {
   server.init({
@@ -65,9 +63,10 @@ const html = () => {
 const css = () => {
   return gulp
     .src(paths.styles.src)
-    .pipe(scss({ outputStyle: "compressed" }))
     .pipe(groupMedia())
-    .pipe(postcss([autoprefixer, csso]))
+    .pipe(
+      postcss([postcssImport, simpleVars, minmax, nested, autoprefixer, csso])
+    )
     .pipe(gulp.dest(paths.styles.dest))
     .pipe(server.stream());
 };
